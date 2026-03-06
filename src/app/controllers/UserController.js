@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { v4 } from 'uuid';
 import * as Yup from 'yup';
 import User from '../models/User.js';
@@ -7,7 +8,7 @@ class UserController {
     const schema = Yup.object({
       name: Yup.string().required(),
       email: Yup.string().email().required(),
-      password_hash: Yup.string().min(6).required(),
+      password: Yup.string().min(6).required(),
       admin: Yup.boolean(),
     });
 
@@ -18,7 +19,7 @@ class UserController {
       return res.status(400).json({ error: err.errors });
     }
 
-    const { name, email, password_hash, admin } = req.body;
+    const { name, email, password, admin } = req.body;
 
     const existingUser = await User.findOne({
       where: {
@@ -31,6 +32,8 @@ class UserController {
         message: 'Email already taken!',
       });
     }
+
+    const password_hash = await bcrypt.hash(password, 10);
 
     const user = await User.create({
       id: v4(),
