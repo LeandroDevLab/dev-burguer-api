@@ -16,7 +16,7 @@ class SessionController {
     };
 
     if (!isValide) {
-      emailOrPasswordIncorrect();
+      return emailOrPasswordIncorrect();
     }
 
     const { email, password } = req.body;
@@ -28,7 +28,7 @@ class SessionController {
     });
 
     if (!existingUser) {
-      emailOrPasswordIncorrect();
+      return emailOrPasswordIncorrect();
     }
 
     const isPasswordCorrect = await bcrypt.compare(
@@ -37,7 +37,7 @@ class SessionController {
     );
 
     if (!isPasswordCorrect) {
-      emailOrPasswordIncorrect();
+      return emailOrPasswordIncorrect();
     }
 
     return res.status(200).json({
