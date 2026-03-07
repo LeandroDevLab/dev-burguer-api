@@ -18,7 +18,6 @@ class ProductController {
 
     const { name, price, category } = req.body;
     const { filename } = req.file;
-    console.log({ name, price, category, filename });
 
     const newProduct = await Product.create({
       name,
