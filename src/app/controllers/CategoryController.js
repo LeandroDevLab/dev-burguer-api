@@ -37,6 +37,54 @@ class CategoryController {
     return res.status(201).json(newCategory);
   }
 
+  async update(req, res) {
+    const schema = Yup.object({
+      name: Yup.string(),
+    });
+
+    try {
+      schema.validateSync(req.body, { abortEarly: false });
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({ error: err.errors });
+    }
+
+    const { name } = req.body;
+    const { id } = req.params;
+
+    let path;
+    if (req.file) {
+      const { filename } = req.file;
+      path = filename;
+    }
+
+    const existingCategory = await Category.findOne({
+      where: {
+        name,
+      },
+    });
+
+    if (existingCategory) {
+      return res.status(400).json({
+        error: 'Category already exists',
+      });
+    }
+
+    await Category.update(
+      {
+        name,
+        path,
+      },
+      {
+        where: {
+          id,
+        },
+      },
+    );
+
+    return res.status(201).json({ message: 'Category update' });
+  }
+
   async index(_req, res) {
     const category = await Category.findAll();
 
