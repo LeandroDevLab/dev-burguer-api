@@ -35,7 +35,7 @@ const OrderSchema = new mongoose.Schema(
           required: true,
         },
         url: {
-          type: Number,
+          type: String,
           required: true,
         },
       },
